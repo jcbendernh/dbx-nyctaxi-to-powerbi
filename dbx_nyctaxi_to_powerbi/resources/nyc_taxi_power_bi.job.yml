@@ -1,0 +1,56 @@
+resources:
+  jobs:
+    nyc_taxi_power_bi:
+      name: NYC Taxi - Power BI
+      job_clusters:
+        - job_cluster_key: Job_cluster
+          new_cluster:
+            data_security_mode: DATA_SECURITY_MODE_DEDICATED
+            kind: CLASSIC_PREVIEW
+            spark_version: 15.4.x-scala2.12
+            num_workers: 8
+            runtime_engine: PHOTON
+            spark_env_vars:
+              PYSPARK_PYTHON: /databricks/python3/bin/python3
+            azure_attributes:
+              first_on_demand: 1
+              spot_bid_max_price: -1
+              availability: SPOT_WITH_FALLBACK_AZURE
+            node_type_id: Standard_D4ds_v5
+      tasks:
+        - task_key: Populate_Enhanced_Table
+          job_cluster_key: Job_cluster
+          email_notifications: {}
+          notebook_task:
+            base_parameters:
+              catalog: dev
+            notebook_path: ..\src\NYCTaxi.py
+            source: WORKSPACE
+          run_if: ALL_SUCCESS
+          webhook_notifications: {}
+        - task_key: Create_Sementic_Model
+          depends_on:
+            - task_key: Populate_Enhanced_Table
+          email_notifications: {}
+          power_bi_task:
+            connection_resource_name: powerbi-devcreds
+            power_bi_model:
+              authentication_method: OAUTH
+              model_name: nyctaxi
+              overwrite_existing: true
+              storage_mode: DIRECT_QUERY
+              workspace_name: Databricks
+            tables:
+              - name: nyctaxi
+                schema: default
+                storage_mode: DIRECT_QUERY
+                catalog: dev
+            warehouse_id: f0cffc830651e8f5
+          run_if: ALL_SUCCESS
+          webhook_notifications: {}
+      email_notifications: {}
+      max_concurrent_runs: 1
+      performance_target: STANDARD
+      queue:
+        enabled: true
+      webhook_notifications: {}
