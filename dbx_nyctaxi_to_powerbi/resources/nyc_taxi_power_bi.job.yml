@@ -2,6 +2,10 @@ resources:
   jobs:
     nyc_taxi_power_bi:
       name: NYC Taxi - Power BI
+      parameters:
+        - name: catalog
+          default: dev
+          description: The Unity Catalog to use for this job
       job_clusters:
         - job_cluster_key: Job_cluster
           new_cluster:
@@ -23,7 +27,7 @@ resources:
           email_notifications: {}
           notebook_task:
             base_parameters:
-              catalog: dev
+              catalog: "{{catalog}}"
             notebook_path: ..\src\NYCTaxi.py
             source: WORKSPACE
           run_if: ALL_SUCCESS
@@ -44,7 +48,7 @@ resources:
               - name: nyctaxi
                 schema: default
                 storage_mode: DIRECT_QUERY
-                catalog: dev
+                catalog: "{{catalog}}"
             warehouse_id: f0cffc830651e8f5
           run_if: ALL_SUCCESS
           webhook_notifications: {}

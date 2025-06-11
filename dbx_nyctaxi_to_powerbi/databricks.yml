@@ -17,13 +17,17 @@ targets:
     default: true
     workspace:
       host: https://adb-3637652851714791.11.azuredatabricks.net
+    parameters:
+      catalog: dev_catalog_value
 
   prod:
     mode: production
     workspace:
-      host: https://adb-3637652851714791.11.azuredatabricks.net
+      host: https://adb-1482299492365908.8.azuredatabricks.net/
       # We explicitly deploy to /Workspace/Users/jackbender@mngenvmcap738982.onmicrosoft.com to make sure we only have a single copy.
       root_path: /Workspace/Users/jackbender@mngenvmcap738982.onmicrosoft.com/.bundle/${bundle.name}/${bundle.target}
     permissions:
       - user_name: jackbender@mngenvmcap738982.onmicrosoft.com
         level: CAN_MANAGE
+    parameters:
+      catalog: prod_catalog_value
