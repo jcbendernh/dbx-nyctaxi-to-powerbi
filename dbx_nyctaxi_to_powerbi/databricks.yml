@@ -18,7 +18,7 @@ targets:
     workspace:
       host: https://adb-3637652851714791.11.azuredatabricks.net
     parameters:
-      catalog: dev_catalog_value
+      catalog: dev
 
   prod:
     mode: production
@@ -30,4 +30,4 @@ targets:
       - user_name: jackbender@mngenvmcap738982.onmicrosoft.com
         level: CAN_MANAGE
     parameters:
-      catalog: prod_catalog_value
+      catalog: prd
